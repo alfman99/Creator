@@ -21,26 +21,41 @@ int main(int argc, char** argv) {
     for(int i = 0; i < KEY_SIZE; i++) keyCrypt[i] = i;
     for(int i = 0; i < IV_SIZE; i++) ivCrypt[i] = IV_SIZE-(i+1);
 
+    // Exe to dll
+    // Run program to convert exe to dll
+    // Path of program: Creator\ExeToDll\ExeToDll.exe
+    string command = "exe_to_dll.exe " + originalPEPath + " temp.dll";
+    int retCode = system(command.data());
+
+    if (retCode < 0) {
+		cout << "Error: Exe to dll" << endl;
+		return -1;
+	}
+
     // Create Cryptography object
     Cryptography crypt(keyCrypt, ivCrypt);
-    
-    // Read file to crypt
-    pair<BYTE*,DWORD> file = FileManager::ReadFileBinary(originalPEPath);
-    
+
+    // Read file to crypt; temp.dll is the dll created by ExeToDll.exe
+    pair<BYTE*, DWORD> file = FileManager::ReadFileBinary("temp.dll");
+
+    // Invisible watermark original file
+    FileManager::InvisibleWatermark(file);
+        
     // Crypt file
     vector<BYTE>* cryptedVector = crypt.Crypt(file.first, file.second);
-
-    // Write crypted file
-    // FileManager::WriteFileBinary("C:\\Users\\srimp\\Desktop\\payload.bin", cryptedVector->data(), file.second);
-
 
     // Copy stub to output path
     pair<BYTE*, DWORD> stubFile = FileManager::ReadFileBinary(stubPath);
     FileManager::WriteFileBinary(outputPath, stubFile.first, stubFile.second);
 
-    // Replace payload on output stub
-    FileManager::ReplacePayloadStub(outputPath, cryptedVector);
+    // Replace payload on output stub and OEP 
+    FileManager::ReplaceDataPayloadStub(outputPath, cryptedVector, FileManager::GetOEPFromBYTES(file.first));
 
     // Clear memory
+    delete file.first;
     delete cryptedVector;
+
+    system("del /f temp.dll");
+
+    return 0;
 }

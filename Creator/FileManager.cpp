@@ -4,6 +4,7 @@
 #include <fstream>
 
 #define RESOURCE_TO_MOD 101
+#define RESOURCE_TO_MOD2 102
 
 pair<BYTE*,DWORD> FileManager::ReadFileBinary(string pathToFile) {
 	ifstream file(pathToFile, ios::binary | ios::ate);
@@ -27,8 +28,26 @@ void FileManager::WriteFileBinary(string pathToFile, BYTE* data, DWORD size) {
 	file.close();
 }
 
-void FileManager::ReplacePayloadStub(const string pathToStub, const vector<BYTE>* payload) {
+DWORD FileManager::GetOEPFromBYTES(const BYTE* payload) {
+	// Get PE header
+	PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)payload;
+	PIMAGE_NT_HEADERS ntHeader = (PIMAGE_NT_HEADERS)(payload + dosHeader->e_lfanew);
+
+	// Get OEP
+	DWORD OEP = ntHeader->OptionalHeader.AddressOfEntryPoint;
+
+	return OEP;
+}
+
+void FileManager::ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const DWORD OEP) {
 	HANDLE hRes = BeginUpdateResource(pathToStub.data(), TRUE);
 	UpdateResource(hRes, "P_BIN", MAKEINTRESOURCE(RESOURCE_TO_MOD), NULL, (void*)payload->data(), payload->size());
+	UpdateResource(hRes, "P_BIN", MAKEINTRESOURCE(RESOURCE_TO_MOD2), NULL, (DWORD*)&OEP, sizeof(DWORD));
 	EndUpdateResource(hRes, FALSE);
+}
+
+void FileManager::InvisibleWatermark(pair<BYTE*, DWORD> file) {
+	// Create an invisible watermark in the file
+
+	
 }
