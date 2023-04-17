@@ -1,6 +1,11 @@
 #pragma once
 #include "pch.h"
 
+struct Payload {
+	char projectId[21];
+	DWORD OEP;
+};
+
 class FileManager {
 public:
 	static pair<BYTE*, DWORD> ReadFileBinary(string pathToFile);
@@ -8,7 +13,7 @@ public:
 
 	static DWORD GetOEPFromBYTES(const BYTE* payload);
 
-	static void ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const DWORD OEP);
+	static void ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const Payload OEP);
 
 	static void InvisibleWatermark(pair<BYTE*, DWORD> file);
 };

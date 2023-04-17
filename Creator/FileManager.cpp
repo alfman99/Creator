@@ -39,10 +39,10 @@ DWORD FileManager::GetOEPFromBYTES(const BYTE* payload) {
 	return OEP;
 }
 
-void FileManager::ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const DWORD OEP) {
+void FileManager::ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const Payload addData) {
 	HANDLE hRes = BeginUpdateResource(pathToStub.data(), TRUE);
 	UpdateResource(hRes, "P_BIN", MAKEINTRESOURCE(RESOURCE_TO_MOD), NULL, (void*)payload->data(), payload->size());
-	UpdateResource(hRes, "P_BIN", MAKEINTRESOURCE(RESOURCE_TO_MOD2), NULL, (DWORD*)&OEP, sizeof(DWORD));
+	UpdateResource(hRes, "P_BIN", MAKEINTRESOURCE(RESOURCE_TO_MOD2), NULL, (void*)&addData, sizeof(Payload));
 	EndUpdateResource(hRes, FALSE);
 }
 

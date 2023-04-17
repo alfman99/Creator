@@ -24,8 +24,16 @@ int main(int argc, char** argv) {
     // Exe to dll
     // Run program to convert exe to dll
     // Path of program: Creator\ExeToDll\ExeToDll.exe
-    string command = "exe_to_dll.exe " + originalPEPath + " temp.dll";
+    string command;
+#ifdef _DEBUG
+    command += "X:\\Carrera\\__TFG\\development\\__Protector\\Creator\\Release\\exe_to_dll.exe ";
+#else
+    command += "exe_to_dll.exe ";
+#endif
+    command += originalPEPath + " temp.dll";
+
     int retCode = system(command.data());
+    cout << system("dir") << endl;
 
     if (retCode < 0) {
 		cout << "Error: Exe to dll" << endl;
@@ -48,8 +56,13 @@ int main(int argc, char** argv) {
     pair<BYTE*, DWORD> stubFile = FileManager::ReadFileBinary(stubPath);
     FileManager::WriteFileBinary(outputPath, stubFile.first, stubFile.second);
 
+    // Additional data to add to stub
+    Payload addData;
+    strcpy_s(addData.projectId, "12345678901234567890\0");
+    addData.OEP = FileManager::GetOEPFromBYTES(file.first);
+
     // Replace payload on output stub and OEP 
-    FileManager::ReplaceDataPayloadStub(outputPath, cryptedVector, FileManager::GetOEPFromBYTES(file.first));
+    FileManager::ReplaceDataPayloadStub(outputPath, cryptedVector, addData);
 
     // Clear memory
     delete file.first;
