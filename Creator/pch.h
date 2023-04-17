@@ -7,6 +7,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include <httplib/httplib.hpp>
+
 #include <Windows.h>
 #include <iostream>
 

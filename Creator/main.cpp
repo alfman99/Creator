@@ -2,6 +2,7 @@
 
 #include "Cryptography.hpp"
 #include "FileManager.hpp"
+#include "ServerRequests.hpp"
 
 int main(int argc, char** argv) {
 
@@ -13,13 +14,6 @@ int main(int argc, char** argv) {
     string originalPEPath(argv[1]);
     string stubPath(argv[2]);
     string outputPath(argv[3]);
-
-    // Generate mock key and iv
-    // Same as mock key and iv in server
-    vector<BYTE> keyCrypt(KEY_SIZE, 0);
-    vector<BYTE> ivCrypt(IV_SIZE, 0);
-    for(int i = 0; i < KEY_SIZE; i++) keyCrypt[i] = i;
-    for(int i = 0; i < IV_SIZE; i++) ivCrypt[i] = IV_SIZE-(i+1);
 
     // Exe to dll
     // Run program to convert exe to dll
@@ -33,15 +27,29 @@ int main(int argc, char** argv) {
     command += originalPEPath + " temp.dll";
 
     int retCode = system(command.data());
-    cout << system("dir") << endl;
 
     if (retCode < 0) {
 		cout << "Error: Exe to dll" << endl;
 		return -1;
 	}
 
+    // Get API_KEY from client
+    string API_KEY;
+
+    cout << "Enter API_KEY: ";
+    cin >> API_KEY;
+
+    // Register project on server
+    ResponseRegisterProject* registerResponse = ServerRequests::RegisterProject(API_KEY);
+
+    if (registerResponse == nullptr) {
+        cout << "Error: Register project" << endl;
+        return -1;
+    }
+
+
     // Create Cryptography object
-    Cryptography crypt(keyCrypt, ivCrypt);
+    Cryptography crypt(*registerResponse);
 
     // Read file to crypt; temp.dll is the dll created by ExeToDll.exe
     pair<BYTE*, DWORD> file = FileManager::ReadFileBinary("temp.dll");
@@ -58,7 +66,7 @@ int main(int argc, char** argv) {
 
     // Additional data to add to stub
     Payload addData;
-    strcpy_s(addData.projectId, "12345678901234567890\0");
+    strcpy_s(addData.projectId, registerResponse->projectID);
     addData.OEP = FileManager::GetOEPFromBYTES(file.first);
 
     // Replace payload on output stub and OEP 
