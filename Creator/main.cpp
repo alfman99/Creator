@@ -47,6 +47,13 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    // Original EXE, need his OEP
+    pair<BYTE*, DWORD> originalPE = FileManager::ReadFileBinary(originalPEPath);
+
+    // Additional data to add to stub
+    Payload addData;
+    strcpy_s(addData.projectId, registerResponse->projectID);
+    addData.OEP = FileManager::GetOEPFromBYTES(originalPE.first);
 
     // Create Cryptography object
     Cryptography crypt(*registerResponse);
@@ -63,11 +70,6 @@ int main(int argc, char** argv) {
     // Copy stub to output path
     pair<BYTE*, DWORD> stubFile = FileManager::ReadFileBinary(stubPath);
     FileManager::WriteFileBinary(outputPath, stubFile.first, stubFile.second);
-
-    // Additional data to add to stub
-    Payload addData;
-    strcpy_s(addData.projectId, registerResponse->projectID);
-    addData.OEP = FileManager::GetOEPFromBYTES(file.first);
 
     // Replace payload on output stub and OEP 
     FileManager::ReplaceDataPayloadStub(outputPath, cryptedVector, addData);
