@@ -9,8 +9,7 @@ ResponseRegisterProject* ServerRequests::RegisterProject(string API_KEY) {
 
 	ResponseRegisterProject* response = new ResponseRegisterProject();
 
-	memcpy(response->projectID, res->body.data(), sizeof(ResponseRegisterProject));
-	response->projectID[PROJECT_ID_SIZE - 1] = '\0';
+	memcpy(response, res->body.data(), sizeof(ResponseRegisterProject));
 
 	return response;
 }
