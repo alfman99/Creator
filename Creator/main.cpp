@@ -59,6 +59,8 @@ int main(int argc, char** argv) {
 
     if (registerResponse == nullptr) {
         cout << "Error: Register project" << endl;
+        // Delete temp.dll
+        system("del /f temp.dll");
         return ERROR_REGISTER_PROJECT;
     }
 
