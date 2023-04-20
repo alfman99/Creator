@@ -6,14 +6,15 @@
 
 int main(int argc, char** argv) {
 
-    if (argc != 4) {
-		cout << "Usage: Creator.exe <original PE> <stub path> <path output>" << endl;
+    if (argc != 5) {
+		cout << "Usage: Creator.exe <original PE> <stub path> <path output> <API_KEY>" << endl;
 		return 0;
 	}
 
     string originalPEPath(argv[1]);
     string stubPath(argv[2]);
     string outputPath(argv[3]);
+    string API_KEY(argv[4]);
 
     // Exe to dll
     // Run program to convert exe to dll
@@ -32,12 +33,6 @@ int main(int argc, char** argv) {
 		cout << "Error: Exe to dll" << endl;
 		return -1;
 	}
-
-    // Get API_KEY from client
-    string API_KEY;
-
-    cout << "Enter API_KEY: ";
-    cin >> API_KEY;
 
     // Register project on server
     ResponseRegisterProject* registerResponse = ServerRequests::RegisterProject(API_KEY);
