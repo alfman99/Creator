@@ -4,6 +4,14 @@
 #include "FileManager.hpp"
 #include "ServerRequests.hpp"
 
+enum ReturnCodes {
+    SUCCESS = 0,
+	ERROR_ORIGINAL_PE_NOT_FOUND = -1,
+    ERROR_STUB_NOT_FOUND = -2,
+    ERROR_EXE_TO_DLL = -3,
+    ERROR_REGISTER_PROJECT = -4,
+};
+
 int main(int argc, char** argv) {
 
     if (argc != 5) {
@@ -19,13 +27,13 @@ int main(int argc, char** argv) {
     // Check if original PE exists
     if (!FileManager::FileExists(originalPEPath)) {
 		cout << "Error: Original PE not found" << endl;
-		return -1;
+		return ERROR_ORIGINAL_PE_NOT_FOUND;
 	}
 
     // Check if stub exists
     if (!FileManager::FileExists(stubPath)) {
         cout << "Error: Stub not found" << endl;
-        return -1;
+        return ERROR_STUB_NOT_FOUND;
     }
 
     // Exe to dll
@@ -43,7 +51,7 @@ int main(int argc, char** argv) {
 
     if (retCode < 0) {
 		cout << "Error: Exe to dll" << endl;
-		return -1;
+		return ERROR_EXE_TO_DLL;
 	}
 
     // Register project on server
@@ -51,7 +59,7 @@ int main(int argc, char** argv) {
 
     if (registerResponse == nullptr) {
         cout << "Error: Register project" << endl;
-        return -1;
+        return ERROR_REGISTER_PROJECT;
     }
 
     // Original EXE, need his OEP
@@ -85,7 +93,8 @@ int main(int argc, char** argv) {
     delete file.first;
     delete cryptedVector;
 
+    // Delete temp.dll
     system("del /f temp.dll");
 
-    return 0;
+    return SUCCESS;
 }
