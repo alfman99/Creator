@@ -16,6 +16,18 @@ int main(int argc, char** argv) {
     string outputPath(argv[3]);
     string API_KEY(argv[4]);
 
+    // Check if original PE exists
+    if (!FileManager::FileExists(originalPEPath)) {
+		cout << "Error: Original PE not found" << endl;
+		return -1;
+	}
+
+    // Check if stub exists
+    if (!FileManager::FileExists(stubPath)) {
+        cout << "Error: Stub not found" << endl;
+        return -1;
+    }
+
     // Exe to dll
     // Run program to convert exe to dll
     // Path of program: Creator\ExeToDll\ExeToDll.exe
