@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     // Path of program: Creator\ExeToDll\ExeToDll.exe
     string command;
 #ifdef _DEBUG
-    command += "X:\\Carrera\\__TFG\\development\\__Protector\\Creator\\Release\\exe_to_dll.exe ";
+    command += "X:\\Carrera\\__TFG\\development\\Creator\\Release\\exe_to_dll.exe ";
 #else
     command += "exe_to_dll.exe ";
 #endif
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     pair<BYTE*, DWORD> file = FileManager::ReadFileBinary("temp.dll");
 
     // Invisible watermark original file
-    FileManager::InvisibleWatermark(file);
+    FileManager::InvisibleWatermark(file, addData);
         
     // Crypt file
     vector<BYTE>* cryptedVector = crypt.Crypt(file.first, file.second);

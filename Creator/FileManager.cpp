@@ -46,9 +46,10 @@ void FileManager::ReplaceDataPayloadStub(const string pathToStub, const vector<B
 	EndUpdateResource(hRes, FALSE);
 }
 
-void FileManager::InvisibleWatermark(pair<BYTE*, DWORD> file) {
-	// Create an invisible watermark in the file
+void FileManager::InvisibleWatermark(pair<BYTE*, DWORD> file, const Payload addData) {
+	// Set watermark on to file data
 
+	
 	
 }
 

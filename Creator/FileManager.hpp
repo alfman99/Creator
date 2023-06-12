@@ -15,7 +15,7 @@ public:
 
 	static void ReplaceDataPayloadStub(const string pathToStub, const vector<BYTE>* payload, const Payload OEP);
 
-	static void InvisibleWatermark(pair<BYTE*, DWORD> file);
+	static void InvisibleWatermark(pair<BYTE*, DWORD> file, const Payload addData);
 
 	static bool FileExists(const string& name);
 };
