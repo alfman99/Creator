@@ -12,6 +12,13 @@ enum ReturnCodes {
     ERROR_REGISTER_PROJECT = -4,
 };
 
+string getFullPathToExecutable() {
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+	string::size_type pos = string(buffer).find_last_of("\\/");
+	return string(buffer).substr(0, pos);
+}
+
 int main(int argc, char** argv) {
 
     if (argc != 5) {
@@ -43,7 +50,7 @@ int main(int argc, char** argv) {
 #ifdef _DEBUG
     command += "X:\\Carrera\\__TFG\\development\\Creator\\Release\\exe_to_dll.exe ";
 #else
-    command += "exe_to_dll.exe ";
+    command += getFullPathToExecutable() + "\\exe_to_dll.exe ";
 #endif
     command += originalPEPath + " temp.dll";
 
