@@ -52,11 +52,17 @@ int main(int argc, char** argv) {
 #else
     command += getFullPathToExecutable() + "\\exe_to_dll.exe ";
 #endif
-    command += originalPEPath + " temp.dll";
+    command += originalPEPath + " " + getFullPathToExecutable() + "\\temp.dll";
 
-    int retCode = system(command.data());
+    try {
+        int retCode = system(command.data());
 
-    if (retCode < 0) {
+        if (retCode < 0) {
+		    cout << "Error: Exe to dll" << endl;
+		    return ERROR_EXE_TO_DLL;
+	    }
+    }
+	catch (exception e) {
 		cout << "Error: Exe to dll" << endl;
 		return ERROR_EXE_TO_DLL;
 	}
