@@ -52,7 +52,10 @@ int main(int argc, char** argv) {
 #else
     command += getFullPathToExecutable() + "\\exe_to_dll.exe ";
 #endif
-    command += originalPEPath + " " + getFullPathToExecutable() + "\\temp.dll";
+    command += "\"" + originalPEPath + "\"" + " " + getFullPathToExecutable() + "\\temp.dll";
+
+    cout << "Command: " << command << endl;
+    system("pause");
 
     try {
         int retCode = system(command.data());
